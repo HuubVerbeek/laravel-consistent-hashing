@@ -1,0 +1,38 @@
+{
+  "name": "huubverbeek/consistent-hashing",
+  "description": "Package",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Huub Verbeek",
+      "email": "verbeekwerk@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "HuubVerbeek\\ConsistentHashing\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "HuubVerbeek\\ConsistentHashing\\Tests\\": "tests"
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7.0",
+    "phpunit/phpunit": "^9.5",
+    "laravel/pint": "^1.1"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-f": "vendor/bin/phpunit --filter",
+    "pint": "vendor/bin/pint"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ConsistentHashingCacheServiceProvider"
+      ]
+    }
+  }
+}
