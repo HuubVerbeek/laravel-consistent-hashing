@@ -12,10 +12,10 @@ class CacheGetter extends StoreImplementation implements GetterContract
 {
     use Validator;
 
-    private const RESERVED_CACHE_KEYS = ['currently_cached_keys'];
+    private const RESERVED_CACHE_KEYS = ['all_cached_keys'];
 
     /**
-     * @param  string  $key
+     * @param string $key
      * @return mixed
      *
      * @throws \Throwable
@@ -35,10 +35,10 @@ class CacheGetter extends StoreImplementation implements GetterContract
      */
     public function all(): array
     {
-        if (! Cache::has(self::CACHE_KEY_ALL)) {
+        if (!Cache::has('all_cached_keys')) {
             return [];
         }
 
-        return Cache::get(self::CACHE_KEY_ALL);
+        return Cache::get('all_cached_keys');
     }
 }

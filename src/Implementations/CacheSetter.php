@@ -12,7 +12,7 @@ class CacheSetter extends StoreImplementation implements SetterContract
 {
     use Validator;
 
-    private const RESERVED_CACHE_KEYS = ['currently_cached_keys'];
+    private const RESERVED_CACHE_KEYS = ['all_cached_keys'];
 
     /**
      * @param  string  $key
@@ -51,8 +51,8 @@ class CacheSetter extends StoreImplementation implements SetterContract
      */
     public function updateKeysList($key): void
     {
-        $keys = Cache::store($this->node->identifier)->get('currently_cached_keys') ?? [];
+        $keys = Cache::store($this->node->identifier)->get('all_cached_keys') ?? [];
 
-        Cache::store($this->node->identifier)->put('currently_cached_keys', array_merge($keys, [$key]));
+        Cache::store($this->node->identifier)->put('all_cached_keys', array_merge($keys, [$key]));
     }
 }
