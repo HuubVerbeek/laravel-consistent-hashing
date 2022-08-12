@@ -2,27 +2,67 @@
 
 namespace HuubVerbeek\ConsistentHashing;
 
-use HuubVerbeek\ConsistentHashing\Exceptions\NodeCollectionException;
-use HuubVerbeek\ConsistentHashing\Rules\NodeCollectionRule;
+use HuubVerbeek\ConsistentHashing\Traits\HasEvaluationStrategies;
 use HuubVerbeek\ConsistentHashing\Traits\Validator;
 use Illuminate\Support\Collection;
 
-class NodeCollection extends Collection
+abstract class NodeCollection extends Collection
 {
-    use Validator;
+    use Validator,
+        HasEvaluationStrategies;
 
-    public function __construct($nodes = [])
+    /**
+     * @param  array  $nodes
+     */
+    public function __construct(array $nodes)
     {
-        $this->validate(
-            new NodeCollectionRule($nodes),
-            new NodeCollectionException()
-        );
-
         parent::__construct($nodes);
     }
 
-    public function findByIdentifier(string $identifier): ?Node
+    /**
+     * @param  string  $identifier
+     * @return AbstractNode|null
+     */
+    public function findByIdentifier(string $identifier): ?AbstractNode
     {
-        return $this->filter(fn ($node) => $node->identifier === $identifier)->first();
+        return $this->firstWhere(fn ($node) => $node->identifier === $identifier);
     }
+
+    /**
+     * @param  string  $identifier
+     * @return bool
+     */
+    public function remove(string $identifier): bool
+    {
+        $this->forget(key($this->filter(fn ($node) => $node->identifier === $identifier)->items));
+
+        return true;
+    }
+
+    /**
+     * @param  int  $degree
+     * @return AbstractNode|null
+     */
+    public function next(int $degree): ?AbstractNode
+    {
+        $identifier = $this->evaluate($degree, $this->nextStrategy());
+
+        return $this->findByIdentifier($identifier);
+    }
+
+    /**
+     * @param  int  $degree
+     * @return AbstractNode|null
+     */
+    public function previous(int $degree): ?AbstractNode
+    {
+        $identifier = $this->evaluate($degree, $this->previousStrategy());
+
+        return $this->findByIdentifier($identifier);
+    }
+
+    /**
+     * @return bool
+     */
+    abstract public function wantsRekey(): bool;
 }

@@ -6,8 +6,20 @@ use HuubVerbeek\ConsistentHashing\Contracts\GetterContract;
 
 class DefaultGetter extends StoreImplementation implements GetterContract
 {
-    public function __invoke(string $key): mixed
+    /**
+     * @param  string  $key
+     * @return mixed
+     */
+    public function get(string $key): mixed
     {
         return $this->node->values[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function all(): array
+    {
+        return $this->node->values;
     }
 }

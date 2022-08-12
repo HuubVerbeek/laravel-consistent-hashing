@@ -2,18 +2,25 @@
 
 namespace HuubVerbeek\ConsistentHashing\Rules;
 
+use HuubVerbeek\ConsistentHashing\AbstractNode;
 use HuubVerbeek\ConsistentHashing\Contracts\RuleContract;
-use HuubVerbeek\ConsistentHashing\Node;
 
 class NodeCollectionRule implements RuleContract
 {
-    public function __construct(private readonly array $nodes)
+    /**
+     * @param  array  $nodes
+     * @param  string  $type
+     */
+    public function __construct(private readonly array $nodes, public string $type = AbstractNode::class)
     {
         //
     }
 
+    /**
+     * @return bool
+     */
     public function passes(): bool
     {
-        return count(array_filter($this->nodes, fn ($node) => ! $node instanceof Node)) === 0;
+        return count(array_filter($this->nodes, fn ($node) => ! is_a($node, $this->type))) === 0;
     }
 }

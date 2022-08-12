@@ -6,14 +6,23 @@ use HuubVerbeek\ConsistentHashing\Exceptions\InvalidDegreeException;
 use HuubVerbeek\ConsistentHashing\Rules\ValidDegreeRule;
 use HuubVerbeek\ConsistentHashing\Traits\Validator;
 
-class Node
+abstract class AbstractNode
 {
     use Validator;
 
+    /**
+     * @var float|int
+     */
     public float $degree;
 
+    /**
+     * @param  int  $degree
+     * @param  string  $identifier
+     *
+     * @throws \Throwable
+     */
     public function __construct(
-        float $degree,
+        int $degree,
         public string $identifier,
     ) {
         $this->validate(

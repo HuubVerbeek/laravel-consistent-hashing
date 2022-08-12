@@ -2,39 +2,29 @@
 
 namespace HuubVerbeek\ConsistentHashing;
 
-use HuubVerbeek\ConsistentHashing\Exceptions\NoNodesSetException;
-use HuubVerbeek\ConsistentHashing\Rules\NodesAreSetRule;
+use Closure;
 use HuubVerbeek\ConsistentHashing\Traits\Validator;
 
 /**
- * @property NodeCollection $nodes
+ * @property NodeCollection $nodeCollection
  */
 class ConsistentHashingService
 {
     use Validator;
 
-    public NodeCollection $nodes;
-
-    public function __construct()
+    /**
+     * @param  StorageNodeCollection|ForwarderNodeCollection  $nodeCollection
+     */
+    public function __construct(public StorageNodeCollection|ForwarderNodeCollection $nodeCollection)
     {
-        $this->nodes = new NodeCollection();
+        //
     }
 
-    public function setNodes(NodeCollection $nodes): ConsistentHashingService
-    {
-        $this->nodes = $nodes;
-
-        return $this;
-    }
-
-    public function resolveNode(string $key): Node
-    {
-        $degree = $this->getDegree($key);
-
-        return $this->nextNode($degree);
-    }
-
-    public function getDegree(string $string): float
+    /**
+     * @param  string  $string
+     * @return int
+     */
+    public function getDegree(string $string): int
     {
         $hex = md5($string);
 
@@ -43,52 +33,92 @@ class ConsistentHashingService
         return $dec % 360;
     }
 
-    public function nextNode(float $degree): Node
+    /**
+     * @param  int  $degree
+     * @return Closure
+     */
+    public function degreeEqualOrSmallerThan(int $degree): Closure
     {
-        $this->validate(
-            new NodesAreSetRule($this->nodes),
-            new NoNodesSetException(),
-        );
+        return fn ($value, $key) => $this->getDegree($key) <= $degree;
+    }
 
-        $positiveValues = [];
+    /**
+     * @param  string  $key
+     * @return AbstractNode
+     */
+    public function resolve(string $key): AbstractNode
+    {
+        $degree = $this->getDegree($key);
 
-        $results = $this->computeDistances($this->nodes, $degree, $positiveValues);
+        return $this->nextNode($degree);
+    }
 
-        if (count($positiveValues) === 0) {
-            return $this->nodes->findByIdentifier(
-                $this->getKeyFromMinValue($results)
-            );
+    /**
+     * @param  int  $degree
+     * @return AbstractNode
+     */
+    public function nextNode(int $degree): AbstractNode
+    {
+        return $this->nodeCollection->next($degree);
+    }
+
+    /**
+     * @param  int  $degree
+     * @return AbstractNode
+     */
+    public function previousNode(int $degree): AbstractNode
+    {
+        return $this->nodeCollection->previous($degree);
+    }
+
+    /**
+     * @param  AbstractNode  $node
+     * @return NodeCollection
+     */
+    public function addNode(AbstractNode $node): NodeCollection
+    {
+        if ($this->nodeCollection->wantsRekey()) {
+            $next = $this->nextNode($node->degree + 1);
+            $this->moveItems($next, $node, $this->degreeEqualOrSmallerThan($node->degree));
         }
 
-        return $this->nodes->findByIdentifier(
-            $this->getKeyFromMinValue($this->removeNegativeValues($results))
-        );
+        $this->nodeCollection->add($node);
+
+        return $this->nodeCollection;
     }
 
-    public function computeDistances(NodeCollection $nodes, float $degree, &$positiveValues): array
+    /**
+     * @param  AbstractNode  $from
+     * @param  AbstractNode  $target
+     * @param  Closure|null  $filter
+     * @return void
+     */
+    public function moveItems(AbstractNode $from, AbstractNode $target, ?Closure $filter = null): void
     {
-        $results = [];
+        $items = $from->all();
 
-        foreach ($nodes as $node) {
-            $results[$node->identifier] = $node->degree - $degree;
-
-            if ($results[$node->identifier] >= 0) {
-                $positiveValues[] = $results[$node->identifier];
-            }
+        if ($filter) {
+            $items = $items->filter($filter);
         }
 
-        return $results;
+        $items->each($from->moveItemTo($target));
     }
 
-    public function removeNegativeValues(array $results): array
+    /**
+     * @param  string  $identifier
+     * @return NodeCollection
+     */
+    public function removeNode(string $identifier): NodeCollection
     {
-        return array_filter($results, fn ($result) => $result >= 0);
-    }
+        $node = $this->nodeCollection->findByIdentifier($identifier);
 
-    public function getKeyFromMinValue($results): string
-    {
-        asort($results);
+        if ($this->nodeCollection->wantsRekey()) {
+            $next = $this->nextNode($node->degree + 1);
+            $this->moveItems($node, $next);
+        }
 
-        return key($results);
+        $this->nodeCollection->remove($identifier);
+
+        return $this->nodeCollection;
     }
 }

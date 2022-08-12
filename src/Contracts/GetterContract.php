@@ -4,5 +4,14 @@ namespace HuubVerbeek\ConsistentHashing\Contracts;
 
 interface GetterContract
 {
-    public function __invoke(string $key): mixed;
+    /**
+     * @param  string  $key
+     * @return mixed
+     */
+    public function get(string $key): mixed;
+
+    /**
+     * @return array
+     */
+    public function all(): array;
 }

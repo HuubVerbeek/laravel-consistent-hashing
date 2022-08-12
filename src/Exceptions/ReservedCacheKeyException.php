@@ -4,8 +4,13 @@ namespace HuubVerbeek\ConsistentHashing\Exceptions;
 
 use Throwable;
 
-class InvalidCacheConfigurationException extends \Exception
+class ReservedCacheKeyException extends \Exception
 {
+    /**
+     * @param  string  $message
+     * @param  int  $code
+     * @param  Throwable|null  $previous
+     */
     public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
@@ -15,8 +20,11 @@ class InvalidCacheConfigurationException extends \Exception
         }
     }
 
+    /**
+     * @return string
+     */
     public function defaultMessage(): string
     {
-        return 'The passed in value is not a configured cache store.';
+        return 'The cache key is reserved. Please use a different key.';
     }
 }

@@ -4,5 +4,9 @@ namespace HuubVerbeek\ConsistentHashing\Contracts;
 
 interface ForwarderContract
 {
-    public function __invoke(string $key);
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function handle($request); // Return type intentionally not defined.
 }
