@@ -4,7 +4,7 @@ namespace HuubVerbeek\ConsistentHashing;
 
 use Illuminate\Support\ServiceProvider;
 
-class ConsistentHashingCacheServiceProvider extends ServiceProvider
+class ConsistentHashingServiceProvider extends ServiceProvider
 {
     /**
      * @return void

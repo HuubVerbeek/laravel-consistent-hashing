@@ -2,7 +2,7 @@
 
 namespace HuubVerbeek\ConsistentHashing\Tests;
 
-use HuubVerbeek\ConsistentHashing\ConsistentHashingCacheServiceProvider;
+use HuubVerbeek\ConsistentHashing\ConsistentHashingServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -15,7 +15,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ConsistentHashingCacheServiceProvider::class,
+            ConsistentHashingServiceProvider::class,
         ];
     }
 
