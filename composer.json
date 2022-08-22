@@ -1,5 +1,5 @@
 {
-  "name": "huubverbeek/consistent-hashing",
+  "name": "huubverbeek/laravel-consistent-hashing",
   "description": "Package",
   "type": "library",
   "authors": [
