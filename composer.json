@@ -32,7 +32,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "ConsistentHashingCacheServiceProvider"
+        "HuubVerbeek\\ConsistentHashing\\ConsistentHashingCacheServiceProvider"
       ]
     }
   }
