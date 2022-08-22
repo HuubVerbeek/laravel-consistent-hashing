@@ -13,9 +13,9 @@ class ConsistentHashingService
     use Validator;
 
     /**
-     * @param  StorageNodeCollection|ForwarderNodeCollection  $nodeCollection
+     * @param  NodeCollection  $nodeCollection
      */
-    public function __construct(public StorageNodeCollection|ForwarderNodeCollection $nodeCollection)
+    public function __construct(public NodeCollection $nodeCollection)
     {
         //
     }
@@ -88,23 +88,6 @@ class ConsistentHashingService
     }
 
     /**
-     * @param  AbstractNode  $from
-     * @param  AbstractNode  $target
-     * @param  Closure|null  $filter
-     * @return void
-     */
-    public function moveItems(AbstractNode $from, AbstractNode $target, ?Closure $filter = null): void
-    {
-        $items = $from->all();
-
-        if ($filter) {
-            $items = $items->filter($filter);
-        }
-
-        $items->each($from->moveItemTo($target));
-    }
-
-    /**
      * @param  string  $identifier
      * @return NodeCollection
      */
@@ -120,5 +103,22 @@ class ConsistentHashingService
         $this->nodeCollection->remove($identifier);
 
         return $this->nodeCollection;
+    }
+
+    /**
+     * @param  AbstractNode  $from
+     * @param  AbstractNode  $target
+     * @param  Closure|null  $filter
+     * @return void
+     */
+    public function moveItems(AbstractNode $from, AbstractNode $target, ?Closure $filter = null): void
+    {
+        $items = $from->all();
+
+        if ($filter) {
+            $items = $items->filter($filter);
+        }
+
+        $items->each($from->moveItemTo($target));
     }
 }
