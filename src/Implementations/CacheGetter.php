@@ -35,10 +35,10 @@ class CacheGetter extends StoreImplementation implements GetterContract
      */
     public function all(): array
     {
-        if (! Cache::has('all_cached_keys')) {
+        if (! Cache::store($this->node->identifier)->has('all_cached_keys')) {
             return [];
         }
 
-        return Cache::get('all_cached_keys');
+        return Cache::store($this->node->identifier)->get('all_cached_keys');
     }
 }
