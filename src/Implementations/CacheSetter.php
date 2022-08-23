@@ -15,8 +15,8 @@ class CacheSetter extends StoreImplementation implements SetterContract
     private const RESERVED_CACHE_KEYS = ['all_cached_keys'];
 
     /**
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed $value
      * @return void
      *
      * @throws ReservedCacheKeyException
@@ -31,16 +31,18 @@ class CacheSetter extends StoreImplementation implements SetterContract
 
         Cache::store($this->node->identifier)->put($key, $value);
 
-        $this->updateKeysList($key);
+        $this->addKeyToKeysList($key);
     }
 
     /**
-     * @param  string  $key
+     * @param string $key
      * @return void
      */
     public function forget(string $key): void
     {
         Cache::store($this->node->identifier)->forget($key);
+
+        $this->removeKeyFromKeysList($key);
     }
 
     /**
@@ -49,10 +51,27 @@ class CacheSetter extends StoreImplementation implements SetterContract
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function updateKeysList($key): void
+    public function addKeyToKeysList($key): void
     {
         $keys = Cache::store($this->node->identifier)->get('all_cached_keys') ?? [];
 
         Cache::store($this->node->identifier)->put('all_cached_keys', array_merge($keys, [$key]));
+    }
+
+    /**
+     * @param $key
+     * @return void
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function removeKeyFromKeysList($key): void
+    {
+        $keys = Cache::store($this->node->identifier)->get('all_cached_keys') ?? [];
+
+        if (($key = array_search($key, $keys)) !== false) {
+            unset($keys[$key]);
+        }
+
+        Cache::store($this->node->identifier)->put('all_cached_keys', $keys);
     }
 }
