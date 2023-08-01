@@ -49,7 +49,7 @@ class ConsistentHashingService
 
 ### Forwarding
 
-The ConsistentHashingService takes a collection of nodes as a constructor argument. Each node takes a degree value (0 - 359), identifier and a `ForwarderContract` class string as arguments.
+The ConsistentHashingService takes a collection of nodes as a constructor argument. Each node in the following example takes a degree value (0 - 359), identifier and a `ForwarderContract` class string as arguments.
 
 ```php
 $nodesCollection = new StorageNodeCollection([
