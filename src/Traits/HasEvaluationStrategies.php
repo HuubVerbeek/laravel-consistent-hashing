@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 trait HasEvaluationStrategies
 {
-    public function evaluate(float $degree, $strategy): string|int
+    public function evaluate(float $degree, callable $strategy): string|int
     {
         $distancesToDegree = $this->computeDistances($this, $degree);
 

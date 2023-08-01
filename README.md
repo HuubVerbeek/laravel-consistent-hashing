@@ -102,8 +102,8 @@ Because the hash function we are using is deterministic (e.g. the same key will 
 
 ### Removing our adding to the hash ring
 
-In the process of resolving a key a `degree` (0 - 359) is computed. This degree is used to determine which node on the hash ring to use. The convention we are using is: _a degree resolves to the next node on the hash ring_. 
-This means that 100 resolves to `cache_3` (degree 180) and 300 to `cache_1` (degree 0). 
+In the process of resolving a key a `degree` (0 - 359) is computed. This degree is used to determine which node on the hash ring to use. The convention that is used is the following: 
+`a degree resolves to the next node on the hash ring`. This means that 100 resolves to `cache_3` (degree 180) and 300 to `cache_1` (degree 0). 
 
 We start running into problems if we want to remove a node. If we remove `cache_3` all degrees greater than 90 and smaller or equal to 180 are mapped to `cache_4` as this now is the next node on the ring. 
 However this is not the node that was actually used when storing the items! 
@@ -117,7 +117,7 @@ $service->removeNode($node);
 ```
 
 Conversely, if we were to add a node between 180 and 270, let's say at degree 225, we need to move all the values in `cache_4` of which the keys map to a degree smaller or equal to 225 to the inserted node `cache_3.5`. The ConsistentHashingService does this in the background
-if you call"
+if you use:s
 
 ```php
 $service->addNode($node);
