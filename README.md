@@ -117,7 +117,7 @@ $service->removeNode($node);
 ```
 
 Conversely, if we were to add a node between 180 and 270, let's say at degree 225, we need to move all the values in `cache_4` of which the keys map to a degree smaller or equal to 225 to the inserted node `cache_3.5`. The ConsistentHashingService does this in the background
-if you use:s
+when you use:
 
 ```php
 $service->addNode($node);
