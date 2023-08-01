@@ -15,9 +15,6 @@ class CacheGetter extends StoreImplementation implements GetterContract
     private const RESERVED_CACHE_KEYS = ['all_cached_keys'];
 
     /**
-     * @param  string  $key
-     * @return mixed
-     *
      * @throws \Throwable
      */
     public function get(string $key): mixed
@@ -30,9 +27,6 @@ class CacheGetter extends StoreImplementation implements GetterContract
         return Cache::store($this->node->identifier)->get($key);
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         if (! Cache::store($this->node->identifier)->has('all_cached_keys')) {

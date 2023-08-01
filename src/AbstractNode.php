@@ -16,9 +16,6 @@ abstract class AbstractNode
     public float $degree;
 
     /**
-     * @param  int  $degree
-     * @param  string  $identifier
-     *
      * @throws \Throwable
      */
     public function __construct(

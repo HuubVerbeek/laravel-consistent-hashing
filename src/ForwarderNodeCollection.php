@@ -8,8 +8,6 @@ use HuubVerbeek\ConsistentHashing\Rules\NodeCollectionRule;
 class ForwarderNodeCollection extends NodeCollection
 {
     /**
-     * @param  array  $nodes
-     *
      * @throws \Throwable
      */
     public function __construct(array $nodes)
@@ -22,9 +20,6 @@ class ForwarderNodeCollection extends NodeCollection
         parent::__construct($nodes);
     }
 
-    /**
-     * @return bool
-     */
     public function wantsRekey(): bool
     {
         return false;

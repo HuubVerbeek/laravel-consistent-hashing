@@ -7,11 +7,6 @@ use Illuminate\Support\Collection;
 
 trait HasEvaluationStrategies
 {
-    /**
-     * @param  float  $degree
-     * @param $strategy
-     * @return string|int
-     */
     public function evaluate(float $degree, $strategy): string|int
     {
         $distancesToDegree = $this->computeDistances($this, $degree);
@@ -19,9 +14,6 @@ trait HasEvaluationStrategies
         return $strategy($distancesToDegree);
     }
 
-    /**
-     * @return callable
-     */
     public function nextStrategy(): callable
     {
         return function ($distances) {
@@ -35,9 +27,6 @@ trait HasEvaluationStrategies
         };
     }
 
-    /**
-     * @return callable
-     */
     public function previousStrategy(): callable
     {
         return function ($distances) {
@@ -51,11 +40,6 @@ trait HasEvaluationStrategies
         };
     }
 
-    /**
-     * @param  NodeCollection  $nodes
-     * @param  float  $degree
-     * @return Collection
-     */
     public function computeDistances(NodeCollection $nodes, float $degree): Collection
     {
         $distances = [];
@@ -67,11 +51,6 @@ trait HasEvaluationStrategies
         return collect($distances);
     }
 
-    /**
-     * @param  Collection  $distances
-     * @param  string  $dir
-     * @return string|int
-     */
     public function getKey(Collection $distances, string $dir): string|int
     {
         $distances = $distances->toArray();
@@ -83,19 +62,11 @@ trait HasEvaluationStrategies
         return key($distances);
     }
 
-    /**
-     * @param  Collection  $distances
-     * @return bool
-     */
     public function hasOnlyNegativeValues(Collection $distances): bool
     {
         return $distances->every(fn ($distance) => $distance < 0);
     }
 
-    /**
-     * @param  Collection  $distances
-     * @return bool
-     */
     public function hasOnlyPositiveValues(Collection $distances): bool
     {
         return $distances->every(fn ($distance) => $distance >= 0);

@@ -6,16 +6,9 @@ use HuubVerbeek\ConsistentHashing\Contracts\ForwarderContract;
 
 class ForwarderNode extends AbstractNode
 {
-    /**
-     * @var ForwarderContract
-     */
     private ForwarderContract $forwarder;
 
     /**
-     * @param  int  $degree
-     * @param  string  $identifier
-     * @param  string  $forwarder
-     *
      * @throws \Throwable
      */
     public function __construct(int $degree, string $identifier, string $forwarder)
@@ -26,7 +19,6 @@ class ForwarderNode extends AbstractNode
     }
 
     /**
-     * @param  array  $args
      * @return mixed
      */
     public function handle(array $args) // Return type intentionally not defined.

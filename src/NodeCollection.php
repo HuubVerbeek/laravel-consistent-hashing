@@ -11,27 +11,16 @@ abstract class NodeCollection extends Collection
     use Validator,
         HasEvaluationStrategies;
 
-    /**
-     * @param  array  $nodes
-     */
     public function __construct(array $nodes)
     {
         parent::__construct($nodes);
     }
 
-    /**
-     * @param  string  $identifier
-     * @return AbstractNode|null
-     */
     public function findByIdentifier(string $identifier): ?AbstractNode
     {
         return $this->firstWhere(fn ($node) => $node->identifier === $identifier);
     }
 
-    /**
-     * @param  string  $identifier
-     * @return bool
-     */
     public function remove(string $identifier): bool
     {
         $this->forget(key($this->filter(fn ($node) => $node->identifier === $identifier)->items));
@@ -39,10 +28,6 @@ abstract class NodeCollection extends Collection
         return true;
     }
 
-    /**
-     * @param  int  $degree
-     * @return AbstractNode|null
-     */
     public function next(int $degree): ?AbstractNode
     {
         $identifier = $this->evaluate($degree, $this->nextStrategy());
@@ -50,10 +35,6 @@ abstract class NodeCollection extends Collection
         return $this->findByIdentifier($identifier);
     }
 
-    /**
-     * @param  int  $degree
-     * @return AbstractNode|null
-     */
     public function previous(int $degree): ?AbstractNode
     {
         $identifier = $this->evaluate($degree, $this->previousStrategy());
@@ -61,8 +42,5 @@ abstract class NodeCollection extends Collection
         return $this->findByIdentifier($identifier);
     }
 
-    /**
-     * @return bool
-     */
     abstract public function wantsRekey(): bool;
 }

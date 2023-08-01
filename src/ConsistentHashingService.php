@@ -12,18 +12,11 @@ class ConsistentHashingService
 {
     use Validator;
 
-    /**
-     * @param  NodeCollection  $nodeCollection
-     */
     public function __construct(public NodeCollection $nodeCollection)
     {
         //
     }
 
-    /**
-     * @param  string  $string
-     * @return int
-     */
     public function getDegree(string $string): int
     {
         $hex = md5($string);
@@ -33,19 +26,11 @@ class ConsistentHashingService
         return $dec % 360;
     }
 
-    /**
-     * @param  int  $degree
-     * @return Closure
-     */
     public function degreeEqualOrSmallerThan(int $degree): Closure
     {
         return fn ($value, $key) => $this->getDegree($key) <= $degree;
     }
 
-    /**
-     * @param  string  $key
-     * @return AbstractNode
-     */
     public function resolve(string $key): AbstractNode
     {
         $degree = $this->getDegree($key);
@@ -53,28 +38,16 @@ class ConsistentHashingService
         return $this->nextNode($degree);
     }
 
-    /**
-     * @param  int  $degree
-     * @return AbstractNode
-     */
     public function nextNode(int $degree): AbstractNode
     {
         return $this->nodeCollection->next($degree);
     }
 
-    /**
-     * @param  int  $degree
-     * @return AbstractNode
-     */
     public function previousNode(int $degree): AbstractNode
     {
         return $this->nodeCollection->previous($degree);
     }
 
-    /**
-     * @param  AbstractNode  $node
-     * @return NodeCollection
-     */
     public function addNode(AbstractNode $node): NodeCollection
     {
         if ($this->nodeCollection->wantsRekey()) {
@@ -87,10 +60,6 @@ class ConsistentHashingService
         return $this->nodeCollection;
     }
 
-    /**
-     * @param  string  $identifier
-     * @return NodeCollection
-     */
     public function removeNode(string $identifier): NodeCollection
     {
         $node = $this->nodeCollection->findByIdentifier($identifier);
@@ -105,13 +74,7 @@ class ConsistentHashingService
         return $this->nodeCollection;
     }
 
-    /**
-     * @param  AbstractNode  $from
-     * @param  AbstractNode  $target
-     * @param  Closure|null  $filter
-     * @return void
-     */
-    public function moveItems(AbstractNode $from, AbstractNode $target, ?Closure $filter = null): void
+    public function moveItems(AbstractNode $from, AbstractNode $target, Closure $filter = null): void
     {
         $items = $from->all();
 
